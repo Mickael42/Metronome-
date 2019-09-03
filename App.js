@@ -9,16 +9,16 @@ class App extends React.Component {
     super(props);
     this.state = {
       value: 130,
-      statutButton: "Play"
+      statutButton: "Play",
     };
     this.audioPlayer = new Audio.Sound();
+    this.soundSpeed = null;
 
   }
 
   loadingSound = async () => {
     try {
       await this.audioPlayer.loadAsync(require('./assets/audio/soundMetronome.wav'));
-      console.log('chargé')
     }
     catch (error) {
       console.log(error)
@@ -27,7 +27,6 @@ class App extends React.Component {
 
   playSound = async () => {
     try {
-      console.log(this.state.value)
       await this.audioPlayer.replayAsync();
 
     }
@@ -40,7 +39,6 @@ class App extends React.Component {
   stopSound = async () => {
     try {
       await this.audioPlayer.stopAsync()
-      console.log('t')
       await this.audioPlayer.unloadAsync()
     }
     catch (error) {
@@ -53,18 +51,16 @@ class App extends React.Component {
 
     if (this.state.statutButton === 'Play') {
       await this.loadingSound();
-      var soundSpeed = setInterval(() => {
+      this.soundSpeed = setInterval(() => {
         this.playSound()
       }, (60 / this.state.value) * 1000);
-
-     
 
       this.setState({
         statutButton: "Pause"
       })
 
     } else if (this.state.statutButton === 'Pause') {
-      clearInterval(soundSpeed);
+      clearInterval(this.soundSpeed);
       await this.stopSound()
       
       this.setState({
